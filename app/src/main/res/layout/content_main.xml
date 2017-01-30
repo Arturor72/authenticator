@@ -12,15 +12,20 @@
     tools:context="com.styloop.authenticator.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
-
+        android:orientation="vertical">
     <Button
         android:onClick="logout"
         android:text="logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:onClick="logout_google"
+        android:text="logout_GOOGLE"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
 </RelativeLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "773415865399",
+    "project_id": "authenticator-df32d"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773415865399:android:21323e0399e0c01a",
+        "android_client_info": {
+          "package_name": "com.styloop.authenticator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773415865399-30t6d0kqm0biufdgjrvaok3k1tou0bk7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.styloop.authenticator",
+            "certificate_hash": "ACC0D9816D97E328EC9C3C4C8F76BDA2790B2308"
+          }
+        },
+        {
+          "client_id": "773415865399-mm67uk2eub79m46gjv3cb1p37sm19ois.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYFupnJU_x1tTCBKGVsDl3MZjU3IPREdU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
