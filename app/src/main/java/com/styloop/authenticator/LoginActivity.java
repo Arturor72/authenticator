@@ -1,5 +1,6 @@
 package com.styloop.authenticator;
 
+import android.app.Application;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,38 +22,41 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks{
+
+    private static  String TAG=LoginActivity.class.getSimpleName();
 
     private LoginButton loginButton;
     private CallbackManager callbackManager;
+    private static final int FB_RC_SIGN_IN = 64206;
+    private String FROM_FACEBOOK="FACEBOOK";
 
     private GoogleSignInOptions googleSignInOptions;
     private GoogleApiClient googleApiClient;
     private static final int RC_SIGN_IN = 9001;
+    private String FROM_GOOGLE="GOOGLE";
 
-    private static  String TAG=LoginActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         facebookLogin();
         googleLogin();
     }
 
 
     public void facebookLogin(){
-
         callbackManager=CallbackManager.Factory.create();
         loginButton=(LoginButton) findViewById(R.id.login_button);
-        registerCallback();
+        registerFacebookCallback();
     }
 
-    private void registerCallback(){
+    private void registerFacebookCallback(){
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                goMainScreen();
+                Log.d(TAG, "onSuccess: " + loginResult);
+                goMainScreen(FROM_FACEBOOK);
             }
 
             @Override
@@ -68,53 +72,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void goMainScreen() {
-        Intent intentGotoActivityMain=new Intent(this,MainActivity.class);
-        intentGotoActivityMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intentGotoActivityMain);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==RC_SIGN_IN){
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInGoogle(result);
-        }
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-
-    }
-
-    private void handleSignInGoogle(GoogleSignInResult result) {
-
-        Log.d(TAG, "handleSignInGoogle: "+ result.isSuccess());
-
-        if (result.isSuccess()){
-            GoogleSignInAccount googleSignInAccount=result.getSignInAccount();
-            Intent goMain=new Intent(this, MainActivity.class);
-            startActivity(goMain);
-        }else{
-            Log.d(TAG, "handleSignInGoogle: Error");
-        }
-
-    }
-
-
     public void googleLogin(){
-        googleSignInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        googleApiClient=new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).build();
-
+        prepareGoogleLogin();
         SignInButton signInButton=(SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener(this);
     }
 
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
+    public void prepareGoogleLogin(){
+        googleSignInOptions=new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                requestEmail().build();
+        googleApiClient = new GoogleApiClient.Builder(this).
+                enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions).addConnectionCallbacks(this)
+                .build();
     }
-
 
     @Override
     public void onClick(View v) {
@@ -123,8 +93,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 signInGoogle();
                 break;
         }
-
-
     }
 
     private void signInGoogle() {
@@ -133,7 +101,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivityForResult(signIntent,RC_SIGN_IN);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==RC_SIGN_IN){
+            Log.d(TAG, "onActivityResult: RequestCode Google: " + requestCode);
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInGoogle(result);
+        }else if(requestCode==FB_RC_SIGN_IN){
+            Log.d(TAG, "onActivityResult: RequestCode Facebook: " + requestCode);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
+    private void handleSignInGoogle(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInGoogle: " + result.isSuccess());
+        if (result.isSuccess()){
+            GoogleSignInAccount googleSignInAccount=result.getSignInAccount();
+            goMainScreen(FROM_GOOGLE);
+
+        }else{
+            Log.d(TAG, "handleSignInGoogle: Error");
+        }
+
+    }
+
+    private void goMainScreen(String from) {
+        Intent intentGotoActivityMain=new Intent(this,MainActivity.class);
+        intentGotoActivityMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intentGotoActivityMain.putExtra("from", from);
+        startActivity(intentGotoActivityMain);
+    }
 
 
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed: " + connectionResult.getErrorMessage());
+    }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected: ");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspended: ");
+    }
 }

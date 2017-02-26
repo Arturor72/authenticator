@@ -17,15 +17,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
     <Button
-        android:onClick="logout"
+        android:onClick="logout_facebook"
         android:text="logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
-        android:onClick="logout_google"
-        android:text="logout_GOOGLE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+            android:onClick="logout_google"
+            android:text="logout_GOOGLE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>

@@ -4,5 +4,11 @@
 
     <!--Facebook API KEY-->
     <string name="facebook_app_id">204080513397098</string>
+    <string name="from_facebok">FACEBOOK</string>
 
+    <!--Goole ClientID-->
+    <string name="google_client_id">773415865399-30t6d0kqm0biufdgjrvaok3k1tou0bk7.apps.googleusercontent.com</string>
+    <string name="server_client_id">773415865399-mm67uk2eub79m46gjv3cb1p37sm19ois.apps.googleusercontent.com</string>
+    <string name="from_google">GOOGLE</string>
+    <string name="not_close_session">No se pudo cerrar sesion</string>
 </resources>
